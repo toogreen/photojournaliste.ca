@@ -1,0 +1,207 @@
+<?php include("includes/inc_editvar.php"); ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<table>
+<head>
+<title>English lesson plans</title>
+<link href="includes/stylesheet.css" rel="stylesheet" type="text/css">
+<STYLE TYPE="text/css">
+     P.breakhere {page-break-before: always}
+</STYLE>
+</head>
+<body bgcolor="<? echo($bgcolor); ?>" leftmargin="15" topmargin="15" marginwidth="15" marginheight="15">
+<a name="top"></a>
+
+<!--TABLE FOR PRINT - EDIT START -->
+<table width="<? echo ($width);?>" align="middle" border="0"><TR>
+<TD align="left"><A href="lesson.php?print=1&uid=<? echo ($uid);?>"><? echo ($pword);?></A></TD>
+<TD align="right"><A href="lesson.php?edit=<? echo ($ego);?>&uid=<? echo ($uid);?>&name=<?echo ($name);?>"><? echo ($etext);?></A></TD>
+</TR></table>
+<!--TABLE FOR PRINT - EDIT STOPS -->
+
+<!-- TITLE BEGIN -->
+<div align="center"><font size='4' face='Verdana, Arial, Helvetica, sans-serif'><b>English lesson plans for <?echo($name);?></b></font><br><br></div>
+<!-- TITLE END -->
+
+<?
+if ($edit==$editvar) {
+		echo "<br><a href='lesson_add.php?uid=$uid&name=$name'><font size='4' face='Verdana, Arial, Helvetica, sans-serif' color='#E53232'><b>ADD A NEW LESSON >></b></font></a><br><br>";
+	}
+// GET DATA FOR LESSON
+include("includes/connect_db.php");
+$query="SELECT * FROM lesson WHERE user='$uid' ORDER BY id DESC";
+$result=mysql_query($query);
+$num=mysql_numrows($result);
+// START LOOP FOR THE LESSON
+$i=0;
+$l1=$num; //this is a runaround because the next loop won't take $num for some reason
+while ($i < $l1) {
+$id=mysql_result($result,$i,"id");
+$user=mysql_result($result,$i,"user");
+$uname=mysql_result($result,$i,"uname");
+$day=mysql_result($result,$i,"day");
+$date=mysql_result($result,$i,"date");
+$textdate=mysql_result($result,$i,"textdate");
+$targ1=mysql_result($result,$i,"targ1");
+$targ2=mysql_result($result,$i,"targ2");
+$targ3=mysql_result($result,$i,"targ3");
+$obj1=mysql_result($result,$i,"obj1");
+$obj2=mysql_result($result,$i,"obj2");
+$obj3=mysql_result($result,$i,"obj3");
+$mat=mysql_result($result,$i,"mat");
+$stud=mysql_result($result,$i,"stud");
+$eval=mysql_result($result,$i,"eval");
+?>
+
+<!--BIG WRAP TABLE STARTS HERE -->
+<table WIDTH="<? echo ($width);?>" align="middle" border="<? echo ($border);?>" cellspacing="<? echo ($cs);?>" bgcolor="#000000">
+  <tr>
+    <td bgcolor="#000000">
+    
+<!--LESSON MAIN TABLE STARTS HERE-->
+<table width="100%" border="<? echo ($border);?>" cellpadding="5" cellspacing="<? echo ($cs);?>" bordercolor="#000000" bgcolor="#000000">
+  <tr> 
+    <td colspan="3" bgcolor="#FFFFFF"><strong>Day:</strong> <? echo($day); ?><br><strong>Date:</strong> <? echo($date); ?>
+      <?
+      if ($edit==$editvar) {
+      		echo " - <a href='lesson_update.php?id=$id&uid=$user'><font size='3' color='#E53232'>EDIT</font></a> - <a href='delete_lesson.php?id=$id'><font size='3' color='#E53232'>DELETE</font></a>";
+      	}
+      ?>
+      </font></td>
+  </tr>
+  <tr>
+  </tr>
+  <tr bgcolor="#FFFFFF"> 
+    <td colspan="3"><strong>Professionnal targets <i>(3 max)</i></strong><br><br>
+    <b>1. </b><? echo($targ1); ?><br>
+    <b>2. </b><? echo($targ2); ?><br>
+    <b>3. </b><? echo($targ3); ?><br>
+    </td>
+  </tr>
+  <tr bgcolor="#FFFFFF"> 
+    <td colspan="3"><strong>Learning objectives (Outcomes)</strong><br>
+    By the end of this lessons, students will be able to:<br><br>
+	<b>1. </b><? echo($obj1); ?><br>
+	<b>2. </b><? echo($obj2); ?><br>
+	<b>3. </b><? echo($obj3); ?><br>
+    </td>
+  </tr>
+  <tr valign="top" bgcolor="#FFFFFF"> 
+    <td colspan="3"><strong>Teaching/Learning materials</strong><br><br>
+    <? echo($mat); ?></td>
+  </tr>
+  
+<!-- SPACING BEGINS -->
+	<tr><td height="<? echo($spacing);?>"></td></tr>
+<!-- SPACING ENDS -->
+
+<!--PROCEDURES SECTION BEGIN-->
+  <tr valign="top" bgcolor="#FFFFFF"> 
+    <td width="10%">&nbsp;</td>
+    <td width="80%"><strong>Teaching and learning procedures</strong></td>
+    <td width="10%">Interaction</td>
+   </tr>
+<!--LOOP ACTIVITIES START HERE-->
+
+<?
+// GET DATA FOR PROCEDURES
+$jquery="SELECT * FROM act WHERE lid=$id ORDER BY aid ASC";
+$jresult=mysql_query($jquery);
+$jnum=mysql_numrows($jresult);
+
+// START LOOP FOR PROCEDURES
+$j=0;
+while ($j < $jnum) {
+$aid=mysql_result($jresult,$j,"aid");
+$lid=mysql_result($jresult,$j,"lid");
+$own=mysql_result($jresult,$j,"own");
+$proc=mysql_result($jresult,$j,"proc");
+$inter=mysql_result($jresult,$j,"inter");
+?>
+    <tr valign="top" bgcolor="#FFFFFF"> 
+    <td width="10%">
+    <?
+    if ($edit==$editvar) {
+    	echo "<a href='act_update.php?aid=$aid'><font color='#E53232'>EDIT</font></a>- <a href='delete_act.php?aid=$aid'><font color='#E53232'>DELETE</font></a><br>"; 
+    }
+    ?><? echo($own); ?>
+    </td>
+    <td width="80%"><? echo($proc); ?></td>
+    <td width="10%"><? echo($inter); ?></td>
+    </tr>
+<!--LOOP ACTIVITIES STOPS HERE-->
+
+<!--ADD PROCEDURES SECTION BEGIN-->
+<?
+++$j;
+}
+if ($edit==$editvar) {
+?>
+<form action="insert_act.php" method="post">
+<input type="hidden" name="lid" value="<? echo($id);?>">
+<input type="hidden" name="uid" value="<? echo($uid);?>">
+<input type="hidden" name="name" value="<? echo($name);?>"> 
+
+	<tr valign="top" bgcolor="#FFFFFF"> 
+    <td width="10%"><textarea cols="10" rows="4" name="own"></textarea></td>
+    <td width="80%"><textarea cols="80" rows="4" name="proc"></textarea></td>
+    <td width="10%"><textarea cols="10" rows="4" name="inter"></textarea></td>
+    </tr>
+<!--ADD PROCEDURES SECTION ENDS -->
+<?
+}
+?>
+<!--PROCEDURES SECTION ENDS HERE-->
+
+<!-- SPACING BEGINS -->
+	<tr><td colspan="3" height="<? echo($spacing);?>">
+<?
+if ($edit==$editvar) {
+?>	
+<div align="center"><input type="Submit" value="Add this learning procedure!"></div>
+</form>
+<? 
+} 
+?>
+	</td></tr>
+<!-- SPACING ENDS -->	
+
+<!-- EVALUATION PART BEGINS HERE -->
+<tr bgcolor="#FFFFFF"> 
+    <td colspan="3"><strong>Students Assessment of Learning Outcomes</strong><br><br>
+		<? echo($stud); ?>
+    </td>
+  </tr>
+  <tr bgcolor="#FFFFFF"> 
+    <td colspan="3"><strong>Teacher's Self-Evaluation</strong><br><br>
+		<? echo($eval); ?>
+    </td>
+  </tr>
+<!-- EVALUATION PART ENDS HERE -->  
+
+</td>
+  </tr>
+</table>
+<!-- LESSON MAIN TABLE ENDS HERE -->
+
+</td></tr></table>
+<!--BIG WRAP TABLE STOPS HERE -->
+
+<!--TABLE FOR BOTTOM ADD ACT + BACK TO TOP BEGINS -->
+<table align="middle" width="<? echo ($width);?>" border="0"><TR>
+<TD align="left"></TD>
+<TD align="right"><a href="index.php?edit=<? echo($edit);?>#top"><? echo($btop);?></a></TD>
+</TR></table>
+<!--TABLE FOR BOTTOM ADD ACT + BACK TO TOP ENDS -->
+
+<br><br>
+<?
+// THIS IF IS TO PRINT PAGE BREAK IF THERE'S A NEXT UNIT
+if ($i<$l1-1){
+	echo "<P CLASS='breakhere'>";
+}
+++$i;
+}
+mysql_close();
+?>
+</body>
+</html>

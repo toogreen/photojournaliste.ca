@@ -1,0 +1,11 @@
+<?
+include("includes/inc_editvar.php");
+include("includes/connect_db.php");
+
+$query="INSERT INTO texts VALUES ('$id','$scat','$title','$intro','$text','$image','$link','$s_section')";
+mysql_query($query);
+echo "Record saved";
+mysql_close();
+?>
+<br><br>
+<A href="texts_<? echo $scat;?>.php?scat=<? echo $scat;?>&edit=<? echo $editvar;?>">Reload</A>

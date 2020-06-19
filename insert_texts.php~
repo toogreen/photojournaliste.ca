@@ -1,0 +1,11 @@
+<?
+
+include("includes/connect_db.php");
+
+$query="INSERT INTO blog VALUES ('$id', '$scat','$title','$intro','$text','$comments','$archive')";
+mysql_query($query);
+echo "Record saved";
+mysql_close();
+?>
+<br><br>
+<A href="blog.php?edit=<? echo $editvar; ?>">Reload</A>

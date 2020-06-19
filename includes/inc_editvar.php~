@@ -1,0 +1,4 @@
+<? 
+$editvar=1;
+$smonth=date("m");
+?>
